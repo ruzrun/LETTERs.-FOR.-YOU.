@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Load diary list from JSON
   function loadDiaries() {
-    fetch("letter for tina.json")
+    fetch("letter for raa.json")
       .then((res) => {
         console.log('Fetch status:', res.status);  // Logs 200, 404, etc.
         console.log('Fetch URL:', res.url);  // Shows the full path it's trying
