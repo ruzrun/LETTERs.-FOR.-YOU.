@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const correctPassword = "090417"; 
+  const correctPassword = "090325"; 
 
   // Pages
   const loginPage = document.getElementById("loginPage");
