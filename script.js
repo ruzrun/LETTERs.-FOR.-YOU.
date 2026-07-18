@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function logVisit(note) {
   try {
-    await fetch("https://script.google.com/macros/s/AKfycbzQjiJcSe6rcjDPcnUttTTraO97Jp9TI3CMOSgYu_MBucDWN1BUb6MBuDVSiBaIqxuaOw/exec", {
+    await fetch("https://script.google.com/macros/s/AKfycbxvMhgiZUPyGnGEb_ngIP2A9y4z5_f7-s9BMOnpPDKEGLs6oTfL4NiLlNz5wQfmAZkY-w/exec", {
       method: "POST",
       body: JSON.stringify({ message: note }),
       headers: { "Content-Type": "application/json" },
