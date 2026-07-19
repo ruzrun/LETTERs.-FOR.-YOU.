@@ -21,10 +21,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let diaries = [];
 
-  // Prepare audio
-  const audio = new Audio("audio/audio.mp3");
-  audio.loop = true; // audio akan repeat
+  // Prepare multiple audio files
+  const audioFiles = [
+  "audio/audio1.mp3",
+  "audio/audio2.mp3",
+  "audio/audio3.mp3"
+];
 
+  let currentAudioIndex = 0;
+  const audio = new Audio(audioFiles[currentAudioIndex]);
+
+  audio.addEventListener("ended", () => {
+  currentAudioIndex++;
+
+  // After the last audio, return to the first audio
+  if (currentAudioIndex >= audioFiles.length) {
+    currentAudioIndex = 0;
+  }
+
+  audio.src = audioFiles[currentAudioIndex];
+  audio.play();
+  });
   // Toggle password visibility
   togglePasswordBtn.addEventListener("click", () => {
     if (passwordInput.type === "password") {
