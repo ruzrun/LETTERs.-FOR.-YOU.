@@ -25,7 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const audioFiles = [
   "audio/audio.mp3",
   "audio/audio2.mp3",
-  "audio/audio3.mp3"
+  "audio/audio3.mp3",
+  "audio/audio4.mp3",
+  "audio/audio5.mp3"
 ];
 
   let currentAudioIndex = 0;
