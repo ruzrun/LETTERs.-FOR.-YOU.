@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Prepare multiple audio files
   const audioFiles = [
-  "audio/audio1.mp3",
+  "audio/audio.mp3",
   "audio/audio2.mp3",
   "audio/audio3.mp3"
 ];
