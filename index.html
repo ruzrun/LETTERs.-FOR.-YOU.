@@ -30,8 +30,26 @@
     <h2>My Diary</h2>
     <div id="currentDate" aria-label="Current date and time"></div>
     <ul id="diaryList" aria-label="List of diary entries"></ul>
+
+      <div id="gameMenu">
+      <div class="game-button" id="ticTacToeBtn">
+         <img
+           src="audio/qaz.png"
+           alt="Tic-Tac-Toe Game">
+      </div>
+    </div>
+    
     <button id="logoutBtn" aria-label="Log out button">Log Out</button>
+  
   </div>
+
+   <!--<div id="gameMenu">
+      <div class="game-button" id="ticTacToeBtn">
+         <img
+           src="audio/qaz.png"
+           alt="Tic-Tac-Toe Game">
+      </div>
+    </div>-->
 
   <div id="viewPage" class="page hidden">
     <div class="diary-header">
@@ -46,6 +64,33 @@
       <img id="modalImage" src="" alt="Enlarged Polaroid">
     </div>
   </div>
+</div>
+
+<!-- PUT TIC-TAC-TOE HERE -->
+<div id="gamePage" class="page hidden">
+
+  <h2>Tic-Tac-Toe</h2>
+
+  <div id="gameStatus">Your turn</div>
+
+  <div id="ticTacToeBoard">
+    <button class="cell"></button>
+    <button class="cell"></button>
+    <button class="cell"></button>
+
+    <button class="cell"></button>
+    <button class="cell"></button>
+    <button class="cell"></button>
+
+    <button class="cell"></button>
+    <button class="cell"></button>
+    <button class="cell"></button>
+  </div>
+
+  <button id="backToListBtn">
+    Back to Diary
+  </button>
+
 </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"
