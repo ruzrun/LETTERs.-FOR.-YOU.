@@ -1,10 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const correctPassword = "090325"; 
+  const correctPassword = "090325";
 
   // Pages
   const loginPage = document.getElementById("loginPage");
   const listPage = document.getElementById("listPage");
   const viewPage = document.getElementById("viewPage");
+  const gamePage = document.getElementById("gamePage");
+
+ // From Arcade Pages Pass 
+  const fromArcade =
+    new URLSearchParams(
+        window.location.search
+    ).get("from") === "arcade";
 
   // Login elements
   const passwordInput = document.getElementById("passwordInput");
@@ -19,31 +26,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
   const backBtn = document.getElementById("backBtn");
 
+  // Game elements
+  const ticTacToeBtn = document.getElementById("ticTacToeBtn");
+  const backToListBtn = document.getElementById("backToListBtn");
+  const cells = document.querySelectorAll(".cell");
+  const gameStatus = document.getElementById("gameStatus");
+
   let diaries = [];
 
-  // Prepare multiple audio files
+  // Audio files
   const audioFiles = [
-  "audio/audio.mp3",
-  "audio/audio2.mp3",
-  "audio/audio3.mp3",
-  "audio/audio4.mp3",
-  "audio/audio5.mp3"
-];
+    "audio/audio.mp3",
+    "audio/audio2.mp3",
+    "audio/audio3.mp3",
+    "audio/audio4.mp3",
+    "audio/audio5.mp3"
+  ];
 
   let currentAudioIndex = 0;
   const audio = new Audio(audioFiles[currentAudioIndex]);
 
   audio.addEventListener("ended", () => {
-  currentAudioIndex++;
+    currentAudioIndex++;
 
-  // After the last audio, return to the first audio
-  if (currentAudioIndex >= audioFiles.length) {
-    currentAudioIndex = 0;
-  }
+    if (currentAudioIndex >= audioFiles.length) {
+      currentAudioIndex = 0;
+    }
 
-  audio.src = audioFiles[currentAudioIndex];
-  audio.play();
+    audio.src = audioFiles[currentAudioIndex];
+    audio.play();
   });
+
   // Toggle password visibility
   togglePasswordBtn.addEventListener("click", () => {
     if (passwordInput.type === "password") {
@@ -55,130 +68,324 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ✅ Handle login click (works across all devices)
+  // Login
   const handleLogin = () => {
     const password = passwordInput.value.trim();
+
     if (password === correctPassword) {
       $(loginPage).fadeOut(400, function() {
         $(listPage).fadeIn(400, function() {
-          loadDiaries(); // Load diaries after fade-in; audio plays inside if successful
+          loadDiaries();
         });
       });
 
-      // Display current date with day of the week (shows immediately after fade-in starts)
       const now = new Date();
-      const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
-      const formattedDate = now.toLocaleDateString('en-US', options); // e.g., "Sunday, 19 Oct 2025"
-      document.getElementById("currentDate").textContent = formattedDate;
+
+      const options = {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      };
+
+      const formattedDate =
+        now.toLocaleDateString("en-US", options);
+
+      document.getElementById("currentDate").textContent =
+        formattedDate;
+
     } else {
-      loginError.textContent = "Password Salah. Masukkan Tarikh Birthday.";
+      loginError.textContent =
+        "Password Salah. Masukkan Tarikh Birthday.";
     }
   };
 
   loginBtn.addEventListener("click", handleLogin);
-  loginBtn.addEventListener("touchstart", handleLogin); // mobile tap fix
 
+  // Google Sheet visit log
   async function logVisit(note) {
-  try {
-    await fetch("https://script.google.com/macros/s/AKfycbyL--HnLaXjU3os1NPVL_lVzpUJtrz3IbXnyFkotiGtCu_I1sUzBXkFP2cCt2q-V1wIug/exec", {
-      method: "POST",
-      body: JSON.stringify({ message: note }),
-      headers: { "Content-Type": "application/json" },
-      mode: "no-cors" // untuk elak CORS error
-    });
-  } catch (err) {
-    console.error("Log failed:", err);
+    try {
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbyL--HnLaXjU3os1NPVL_lVzpUJtrz3IbXnyFkotiGtCu_I1sUzBXkFP2cCt2q-V1wIug/exec",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            message: note
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          },
+          mode: "no-cors"
+        }
+      );
+    } catch (err) {
+      console.error("Log failed:", err);
+    }
   }
-}
 
-  // ✅ Load diary list from JSON
+  // Load diary list
   function loadDiaries() {
     fetch("letter for raa.json")
       .then((res) => {
-        console.log('Fetch status:', res.status);  // Logs 200, 404, etc.
-        console.log('Fetch URL:', res.url);  // Shows the full path it's trying
-        if (!res.ok) throw new Error("Failed to load diary.json - Status: " + res.status);
+        console.log("Fetch status:", res.status);
+        console.log("Fetch URL:", res.url);
+
+        if (!res.ok) {
+          throw new Error(
+            "Failed to load JSON. Status: " +
+            res.status
+          );
+        }
+
         return res.json();
       })
       .then((data) => {
-        console.log('Loaded data:', data);  // Logs the JSON if successful
+        console.log("Loaded data:", data);
+
         diaries = data.diaries;
+
         diaryList.innerHTML = "";
+
         diaries.forEach((entry, index) => {
           const li = document.createElement("li");
+
           li.textContent = entry.title;
-          li.addEventListener("click", () => openDiary(index));
+
+          li.addEventListener("click", () => {
+            openDiary(index);
+          });
+
           diaryList.appendChild(li);
         });
-        audio.play(); // Play audio here, after list appears (fetch succeeds and list is populated)
+
+        audio.play();
       })
       .catch((err) => {
-        diaryList.innerHTML = '<li style="color:black;">Sorry.. Tak Dapat Nak Access</li>';
-        console.error('Fetch error:', err.message);  // Logs the real error
+        diaryList.innerHTML =
+          '<li style="color:black;">Sorry.. Tak Dapat Nak Access</li>';
+
+        console.error(
+          "Fetch error:",
+          err.message
+        );
       });
   }
 
-// ✅ View diary details
-function openDiary(index) {
-  const entry = diaries[index];
-  if (!entry) return;
-  $(listPage).fadeOut(400, function() {
-    $(viewPage).fadeIn(400);
-  });
-  diaryTitle.textContent = entry.title;
-  diaryContent.textContent = entry.content;
-  document.getElementById("diaryDate").textContent = entry.date ? entry.date : '';
+  //if (fromArcade) {
+  //loginPage.style.display = "none";
+  //listPage.style.display = "block";
+  //loadDiaries();
+  //const now = new Date();
+  //const options = {
+    //weekday: "long",
+    //day: "numeric",
+    //month: "short",
+    //year: "numeric"
+  //};
+    
+  //const formattedDate =
+    //now.toLocaleDateString(
+  //    "en-US",
+    //  options
+//    );
+//  document.getElementById(
+//    "currentDate"
+ // ).textContent = formattedDate;
+//}
 
-  // Clear any existing Polaroid
-  const existingPolaroid = document.querySelector('.polaroid');
-  if (existingPolaroid) {
-    existingPolaroid.remove();
-  }
+  // Open diary
+  function openDiary(index) {
+    const entry = diaries[index];
 
-  // Add Polaroid if image exists
-  if (entry.image) {
-    const polaroid = document.createElement('div');
-    polaroid.classList.add('polaroid');
-    const img = document.createElement('img');
-    img.src = entry.image;
-    img.alt = 'Polaroid image for diary entry';
-    polaroid.appendChild(img);
-    viewPage.appendChild(polaroid);  // Append to #viewPage
+    if (!entry) return;
 
-    // Click to show popup modal
-    polaroid.addEventListener('click', () => {
-      document.getElementById('modalImage').src = entry.image;
-      document.getElementById('polaroidModal').style.display = 'flex';
+    $(listPage).fadeOut(400, function() {
+      $(viewPage).fadeIn(400);
     });
-  }
-}
 
-// Add modal close logic (outside openDiary, in DOMContentLoaded)
-const modal = document.getElementById('polaroidModal');
-modal.addEventListener('click', () => {
-  modal.style.display = 'none';  // Close on click anywhere
-});
-   
-  // ✅ Back to list
+    diaryTitle.textContent = entry.title;
+
+    diaryContent.textContent = entry.content;
+
+    document.getElementById("diaryDate").textContent =
+      entry.date ? entry.date : "";
+
+    const existingPolaroid =
+      document.querySelector(".polaroid");
+
+    if (existingPolaroid) {
+      existingPolaroid.remove();
+    }
+
+    if (entry.image) {
+      const polaroid =
+        document.createElement("div");
+
+      polaroid.classList.add("polaroid");
+
+      const img =
+        document.createElement("img");
+
+      img.src = entry.image;
+
+      img.alt =
+        "Polaroid image for diary entry";
+
+      polaroid.appendChild(img);
+
+      viewPage.appendChild(polaroid);
+
+      polaroid.addEventListener("click", () => {
+        document.getElementById(
+          "modalImage"
+        ).src = entry.image;
+
+        document.getElementById(
+          "polaroidModal"
+        ).style.display = "flex";
+      });
+    }
+  }
+
+  // Close image modal
+  const modal =
+    document.getElementById("polaroidModal");
+
+  modal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  // Back to diary list
   backBtn.addEventListener("click", () => {
     $(viewPage).fadeOut(400, function() {
       $(listPage).fadeIn(400);
     });
   });
 
- // jika di bukak google sheet detect 
-    logVisit("Opened");
-  
-  // ✅ Logout
+  // Log website visit
+  logVisit("Opened");
+
+  // Logout
   logoutBtn.addEventListener("click", () => {
     $(listPage).fadeOut(400, function() {
       $(viewPage).fadeOut(400, function() {
-        $(loginPage).fadeIn(400);
+        $(gamePage).fadeOut(400, function() {
+          $(loginPage).fadeIn(400);
+        });
       });
     });
+
     passwordInput.value = "";
+
     loginError.textContent = "";
-    audio.pause(); // Pause audio on logout
-    audio.currentTime = 0; // Reset audio
+
+    audio.pause();
+
+    audio.currentTime = 0;
+  });
+
+  // =========================
+  // TIC-TAC-TOE
+  // =========================
+
+  ticTacToeBtn.addEventListener("click", () => {
+    $(listPage).fadeOut(400, function() {
+      $(gamePage).fadeIn(400);
+    });
+  });
+
+  let currentPlayer = "X";
+
+  let gameActive = true;
+
+  const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+
+  cells.forEach((cell) => {
+    cell.addEventListener("click", () => {
+      if (
+        cell.textContent !== "" ||
+        !gameActive
+      ) {
+        return;
+      }
+
+      cell.textContent = currentPlayer;
+
+      checkWinner();
+
+      if (gameActive) {
+        currentPlayer =
+          currentPlayer === "X"
+            ? "O"
+            : "X";
+
+        gameStatus.textContent =
+          `Player ${currentPlayer}'s turn`;
+      }
+    });
+  });
+
+  function checkWinner() {
+    for (
+      let combination
+      of winningCombinations
+    ) {
+      const [a, b, c] = combination;
+
+      if (
+        cells[a].textContent &&
+        cells[a].textContent ===
+        cells[b].textContent &&
+        cells[a].textContent ===
+        cells[c].textContent
+      ) {
+        gameStatus.textContent =
+          `Player ${cells[a].textContent} wins!`;
+
+        gameActive = false;
+
+        return;
+      }
+    }
+
+    const draw =
+      [...cells].every(
+        (cell) =>
+          cell.textContent !== ""
+      );
+
+    if (draw) {
+      gameStatus.textContent =
+        "It's a draw!";
+
+      gameActive = false;
+    }
+  }
+
+  // Back from game to diary
+  backToListBtn.addEventListener("click", () => {
+    cells.forEach((cell) => {
+      cell.textContent = "";
+    });
+
+    currentPlayer = "X";
+
+    gameActive = true;
+
+    gameStatus.textContent =
+      "Your turn";
+
+    $(gamePage).fadeOut(400, function() {
+      $(listPage).fadeIn(400);
+    });
   });
 });
