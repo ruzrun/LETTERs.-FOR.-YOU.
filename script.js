@@ -171,27 +171,27 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  //if (fromArcade) {
-  //loginPage.style.display = "none";
-  //listPage.style.display = "block";
-  //loadDiaries();
-  //const now = new Date();
-  //const options = {
-    //weekday: "long",
-    //day: "numeric",
-    //month: "short",
-    //year: "numeric"
-  //};
+  if (fromArcade) {
+  loginPage.style.display = "none";
+  listPage.style.display = "block";
+  loadDiaries();
+  const now = new Date();
+  const options = {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  };
     
-  //const formattedDate =
-    //now.toLocaleDateString(
-  //    "en-US",
-    //  options
-//    );
-//  document.getElementById(
-//    "currentDate"
- // ).textContent = formattedDate;
-//}
+  const formattedDate =
+    now.toLocaleDateString(
+      "en-US",
+      options
+    );
+  document.getElementById(
+    "currentDate"
+  ).textContent = formattedDate;
+}
 
   // Open diary
   function openDiary(index) {
